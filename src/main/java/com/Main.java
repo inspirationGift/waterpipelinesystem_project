@@ -6,22 +6,27 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-        System.out.println("Path to the file that describes the water pipeline system: ");
+        System.out.println("Please, put the filepath of the water pipeline system: ");
         String systemWaterPipeLineCSV = sc.next();
-        // "/Users/mark/Documents/microservice/movie-project/dbBestTestTask/src/main/resources/waterSystem.csv"
 
-        System.out.println("Path to the file with a set of points: ");
+        System.out.println("Please, put the filepath of the points, seeking routes: ");
         String pointsCSV = sc.next();
-        // "/Users/mark/Documents/microservice/movie-project/dbBestTestTask/src/main/resources/Routes.csv"
 
-        System.out.println("Output folder: ");
+        System.out.println("Please, put path name of output folder: ");
         String outputFolder = sc.next();
-        // "/Users/mark/Documents/microservice/movie-project/dbBestTestTask/src/main/resources/"
         sc.close();
 
-        Worker worker = new Worker(systemWaterPipeLineCSV, pointsCSV, outputFolder);
-        worker.checkRoutes();
+//        /**/
+//        systemWaterPipeLineCSV = "/Users/mark/Documents/practice/waterpipelinesystem_project/src/main/resources/waterSystem.csv";
+//        pointsCSV = "/Users/mark/Documents/practice/waterpipelinesystem_project/src/main/resources/Routes.csv";
+//        outputFolder = "/Users/mark/Documents/practice/waterpipelinesystem_project/src/main/resources/";
+//        /**/
+
+        Worker worker = new Worker();
+
+        worker.loadFiles(systemWaterPipeLineCSV, pointsCSV);
+        worker.findRoutes();
+        worker.uploadResults(outputFolder);
+
     }
-
-
 }

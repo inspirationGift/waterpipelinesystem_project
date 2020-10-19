@@ -5,7 +5,7 @@ import com.domain.Result;
 
 import java.util.List;
 
-public interface ComboService {
+public interface CombinationsService {
     void initComboTable(int version);
 
     List<Combinations> findAll();

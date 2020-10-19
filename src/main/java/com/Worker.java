@@ -2,59 +2,73 @@ package com;
 
 import com.domain.Result;
 import com.domain.Route;
+import com.domain.ViewDTO;
 import com.domain.WaterPipeLineSystem;
 import com.percistence.FactoryManager;
 import com.service.*;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Set;
 
 public class Worker {
 
-    private String sysWaterFile;
-    private String pointsFile;
-    private String outputFolder;
     private EntityManager em;
-    private CsvProcessing csv;
-    private ResultRepository findResults;
-    private ComboService combo;
 
-    public Worker(String sysWaterFile, String pointsFile, String outputFolder) {
-        this.sysWaterFile = sysWaterFile;
-        this.pointsFile = pointsFile;
-        this.outputFolder = outputFolder;
-        em = FactoryManager.getEntityManager();
-        csv = new CsvProcessingImpl(em);
-        findResults = new ResultRepositoryImpl(em);
-        combo = new ComboTableImpl(em);
+    private CsvProcessing csv;
+    private RouteRepo routeService;
+    private ResultRepository resultService;
+    private CombinationsService combinationsBuilder;
+
+    public Worker() {
+        this.em = FactoryManager.getEntityManager();
+        this.csv = new CsvProcessingImpl(em);
+        this.routeService = new RouteRepoImpl(em);
+        this.combinationsBuilder = new CombinationsTableImpl(em);
+        this.resultService = new ResultRepositoryImpl(em);
     }
 
-    public void checkRoutes() {
-        try {
-            csv.readCsv(sysWaterFile, WaterPipeLineSystem.class);
-            csv.readCsv(pointsFile, Route.class);
+    public void loadFiles(String waterSystemFile, String SeekingPointsFile) {
+        this.csv.readCsv(waterSystemFile, WaterPipeLineSystem.class);
+        this.csv.readCsv(SeekingPointsFile, Route.class);
+    }
 
-            findResults.routesSuccess();
-            findResults.checkCyclic();
+    public void findRoutes() {
+        try {
+
+            List<Result> result1 = routeService.findRoutesWhichAreDirectlySucceeded();
+            resultService.trackResults(result1);
+            resultService.clearCyclicResults();
 
             boolean go = true;
             int i = 0;
 
             while (go) {
-                combo.initComboTable(i);
-                go = combo.analyse(i);
-                List<Result> result = combo.getResult(i);
-                findResults.trackListResults(result);
+                combinationsBuilder.initComboTable(i);
+                go = combinationsBuilder.analyse(i);
+
+                List<Result> result = combinationsBuilder.getResult(i);
+
+                resultService.trackResults(result);
                 i++;
             }
-            findResults.routesFailed();
-            csv.writeCsv(outputFolder); // output
-            System.out.println("Please check results");
-        } catch (
-                Exception e) {
+
+            List<Result> result3 = routeService.findRoutesWhichAreFailedAfterCombination();
+            resultService.trackResults(result3);
+
+            // output
+            System.out.println("Please check results:");
+            Set<ViewDTO> res = resultService.resultsView();
+            res.forEach(System.out::println);
+
+        } catch (Exception e) {
             e.printStackTrace();
             //todo
         }
+    }
+
+    public void uploadResults(String address) {
+        csv.writeCsv(address);
     }
 
 

@@ -23,7 +23,7 @@ public class CsvProcessingImpl implements CsvProcessing {
         try {
             em.getTransaction().begin();
             query = em.createNativeQuery(q);
-            query.getResultStream().forEach(r -> {
+            query.getResultList().forEach(r -> {
                 T mapper = mapper((String) r, m);
                 em.persist(mapper);
             });
