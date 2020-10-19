@@ -3,3 +3,6 @@
 /log/
 /target/
 /src/main/resources/log/
+/src/main/resources/MyCSVResult.csv
+/aMyCSVResult.csv
+/dbBestTestTask.iml

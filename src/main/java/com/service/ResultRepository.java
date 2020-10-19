@@ -1,26 +1,20 @@
 package com.service;
 
 import com.domain.Result;
-import com.domain.Route;
+import com.domain.ViewDTO;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ResultRepository {
 
-    void trackListResults(List<Result> result);
+    void trackOneResult(Result result);
 
-    void trackResult(Result result);
+    void trackResults(List<Result> result);
 
-    void checkCyclic();
+    void clearCyclicResults();
 
-    List<Route> findAllRoutes();
+    List<Result> getCombinationsResults();
 
-    int totalRoutes();
-
-    void routesFailed();
-
-    void routesSuccess();
-
-    List<Route> getResult();
-
+    Set<ViewDTO> resultsView();
 }

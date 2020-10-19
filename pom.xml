@@ -22,7 +22,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.4.21.Final</version>
+            <version>5.4.2.Final</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -68,33 +68,34 @@
                 </configuration>
             </plugin>
             <plugin>
+                <!-- Build an executable JAR -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.1.0</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
                     <archive>
                         <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
                             <mainClass>com.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.12.4</version>
-            </plugin>
+<!--            <plugin>-->
+<!--                <artifactId>maven-surefire-plugin</artifactId>-->
+<!--                <version>2.12.4</version>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 
 
-    <distributionManagement>
-        <repository>
-            <id>internal.repo</id>
-            <name>Internal repo</name>
-            <url>file:///Users/mark/Desktop/</url>
-        </repository>
-    </distributionManagement>
+<!--    <distributionManagement>-->
+<!--        <repository>-->
+<!--            <id>internal.repo</id>-->
+<!--            <name>Internal repo</name>-->
+<!--            <url>file:///Users/mark/Desktop/</url>-->
+<!--        </repository>-->
+<!--    </distributionManagement>-->
 
 </project>

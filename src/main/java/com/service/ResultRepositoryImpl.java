@@ -1,11 +1,12 @@
 package com.service;
 
 import com.domain.Result;
-import com.domain.Route;
+import com.domain.ViewDTO;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ResultRepositoryImpl implements ResultRepository {
 
@@ -16,7 +17,7 @@ public class ResultRepositoryImpl implements ResultRepository {
     }
 
     @Override
-    public void trackListResults(List<Result> result) {
+    public void trackResults(List<Result> result) {
         if (result.size() > 0) {
             for (Result r : result) {
                 Result res = new Result(r.getRouteId(), r.isExist(), r.getLength());
@@ -29,7 +30,7 @@ public class ResultRepositoryImpl implements ResultRepository {
     }
 
     @Override
-    public void trackResult(Result result) {
+    public void trackOneResult(Result result) {
         fm.getTransaction().begin();
         fm.persist(result);
         fm.flush();
@@ -37,7 +38,13 @@ public class ResultRepositoryImpl implements ResultRepository {
     }
 
     @Override
-    public void checkCyclic() {
+    public List<Result> getCombinationsResults() {
+        return fm.createQuery("select r from Result r ")
+                .getResultList();
+    }
+
+    @Override
+    public void clearCyclicResults() {
         fm.getTransaction().begin();
         fm.createQuery("delete from WaterPipeLineSystem w " +
                 "where w.idX=w.idY ").executeUpdate();
@@ -49,54 +56,12 @@ public class ResultRepositoryImpl implements ResultRepository {
     }
 
     @Override
-    public List<Route> findAllRoutes() {
-        return fm.createQuery("select r from Route r ").getResultList();
+    public Set<ViewDTO> resultsView() {
+        List<Result> res = getCombinationsResults();
+        Set<ViewDTO> dto = new HashSet<>();
+        res.forEach(result -> dto.add(new ViewDTO(result.getRouteId(), result.isExist(), result.getLength())));
+        return dto;
     }
 
-    @Override
-    public int totalRoutes() {
-        Query q;
-        q = fm.createQuery("select max(r.id) from Route r"); // !!!todo null pointer
-        List resultList = q.getResultList();
-        if (resultList.size() != 0)
-            return (int) resultList.get(0);
-        else return 0;
-    }
-
-    @Override
-    public void routesFailed() {
-        Query query;
-        query = fm.createQuery(
-                "select r from Route r " +
-                        "where r.id not in(" +
-                        "select distinct m.routeId from Result m)");
-
-        List<Route> resultList = query.getResultList();
-        if (resultList.size() > 0)
-            for (Route r : resultList) trackResult(new Result(r.getId(), false, 0));
-    }
-
-    @Override
-    public void routesSuccess() {
-        Query query = fm.createQuery("select a.id as routeId, r.length " +
-                "from WaterPipeLineSystem r " +
-                "inner join Route a on r.idX=a.idA and r.idY=a.idB ");
-        List<Object[]> resultList = query.getResultList();
-
-        resultList.forEach(v -> {
-            Result res = new Result((int) v[0], true, (int) v[1]);
-            trackResult(res);
-        });
-
-        // todo failed scenario
-    }
-
-    @Override
-    public List<Route> getResult() {
-        Query q;
-        q = fm.createQuery("SELECT r from Result r order by r.routeId asc");
-        List<Route> resultList = q.getResultList();
-        return resultList;
-    }
 
 }

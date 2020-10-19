@@ -8,11 +8,11 @@ import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ComboTableImpl implements ComboService {
+public class CombinationsTableImpl implements CombinationsService {
 
     private EntityManager em;
 
-    public ComboTableImpl(EntityManager em) {
+    public CombinationsTableImpl(EntityManager em) {
         this.em = em;
     }
 
