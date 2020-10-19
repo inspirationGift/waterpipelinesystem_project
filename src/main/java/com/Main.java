@@ -16,15 +16,12 @@ public class Main {
 
         System.out.println("Output folder: ");
         String outputFolder = sc.next();
-        // "/Users/mark/Documents/microservice/movie-project/dbBestTestTask/src/main/resources/log/"
+        // "/Users/mark/Documents/microservice/movie-project/dbBestTestTask/src/main/resources/"
         sc.close();
 
         Worker worker = new Worker(systemWaterPipeLineCSV, pointsCSV, outputFolder);
         worker.checkRoutes();
-
-
     }
 
-//    boolean
 
 }
