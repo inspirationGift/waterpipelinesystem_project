@@ -16,12 +16,6 @@ public class Main {
         String outputFolder = sc.next();
         sc.close();
 
-//        /**/
-//        systemWaterPipeLineCSV = "/Users/mark/Documents/practice/waterpipelinesystem_project/src/main/resources/waterSystem.csv";
-//        pointsCSV = "/Users/mark/Documents/practice/waterpipelinesystem_project/src/main/resources/Routes.csv";
-//        outputFolder = "/Users/mark/Documents/practice/waterpipelinesystem_project/src/main/resources/";
-//        /**/
-
         Worker worker = new Worker();
 
         worker.loadFiles(systemWaterPipeLineCSV, pointsCSV);
